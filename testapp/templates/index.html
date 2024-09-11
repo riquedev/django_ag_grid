@@ -1,10 +1,12 @@
+{% load ag_grid %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Test App</title>
+    {% render_ag_grid_dependencies %}
 </head>
 <body>
-$END$
+{% render_ag_grid 'grid' %}
 </body>
 </html>

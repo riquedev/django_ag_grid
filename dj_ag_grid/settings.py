@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_ag_grid.apps.DjangoAgGridConfig',
+    "testapp.apps.TestappConfig"
 ]
 
 MIDDLEWARE = [

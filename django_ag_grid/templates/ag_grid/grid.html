@@ -1,7 +1,44 @@
 {% spaceless %}
-    <script src="{{ js }}"></script>
-    <link rel="stylesheet" href="{{ css }}">
-    {% if theme %}
-        <link rel="stylesheet" href="{{ theme }}">
-    {% endif %}
+    <div id="{{ grid_id }}" style="height: 600px; width: 100%"
+         class="{{ grid_class }}"></div>
+
+    <script type="text/javascript" charset="utf-8">
+        (() => {
+            const columnDefs = JSON.parse('{{ column_defs|escapejs }}');
+            const defaultColDef = JSON.parse('{{ default_col_def|escapejs }}');
+            const additionalSettings = JSON.parse('{{ additional_settings|escapejs }}');
+            const localeText = {{ locale_text|safe }};
+            const gridOptions = {
+                columnDefs,
+                defaultColDef,
+                localeText,
+                ...additionalSettings
+            }
+
+            const dataSource = {
+                getRows: function (params) {
+                    let filtering = encodeURIComponent(JSON.stringify(params.filterModel));
+                    let sorting = encodeURIComponent(JSON.stringify(params.sortModel));
+
+                    let startRow = params.startRow;
+                    let endRow = params.endRow;
+
+                    let url = `{{ url_path }}?startRow=${startRow}&endRow=${endRow}&filter=${filtering}&sort=${sorting}`;
+
+                    fetch(url)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            params.successCallback(data.rows, data.totalRows);
+                        })
+                        .catch((err) => {
+                            params.failCallback();
+                        });
+                },
+            }
+            const gridDiv = document.querySelector('#{{ grid_id }}')
+            new agGrid.Grid(gridDiv, gridOptions);
+            gridOptions.api.setGridOption('datasource', dataSource)
+            gridOptions.api.sizeColumnsToFit();
+        })();
+    </script>
 {% endspaceless %}

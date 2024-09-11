@@ -1,39 +1,66 @@
-import itertools
-from dynamic_preferences.users.forms import user_preference_form_builder
+import json
+import re
 from django import template
-
+from django.core.cache import cache
+from django.urls import resolve, reverse
+from django_ag_grid.settings import AG_GRID_JS, AG_GRID_CSS, AG_GRID_THEME, AG_GRID_LOCALE, AG_GRID_LOCALE_CACHE
+from requests import Session
 register = template.Library()
 
 
-@register.filter
-def chunks(value, chunk_length):
-    """
-    Breaks a list up into a list of lists of size <chunk_length>
-    """
-    clen = int(chunk_length)
-    i = iter(value)
-    while True:
-        chunk = list(itertools.islice(i, clen))
-        if chunk:
-            yield chunk
-        else:
-            break
+@register.inclusion_tag('ag_grid/dependencies.html', takes_context=True)
+def render_ag_grid_dependencies(context):
+    context['js'] = AG_GRID_JS
+    context['css'] = AG_GRID_CSS
+    context['theme'] = AG_GRID_THEME
+    return context
 
 
-@register.simple_tag(takes_context=True)
-def field_notifications(context):
-    request = context.get('request')
-    if request:
-        user = request.user
-        return user.notifications.unread()
+@register.inclusion_tag('ag_grid/grid.html', takes_context=True)
+def render_ag_grid(context, url_name,
+                   grid_id: str = None,
+                   grid_class: str = None,
+                   default_col_def: str = '',
+                   **kwargs
+                   ):
+    url_path = reverse(url_name)
+    view_func = resolve(url_path).func
 
+    if 'enableServerSideSorting' not in kwargs:
+        kwargs['enableServerSideSorting'] = True
+    if 'enableServerSideFilter' not in kwargs:
+        kwargs['enableServerSideFilter'] = True
+    if 'rowModelType' not in kwargs:
+        kwargs['rowModelType'] = 'infinite'
+    if 'cacheBlockSize' not in kwargs:
+        kwargs['cacheBlockSize'] = 100
+    if 'maxBlocksInCache' not in kwargs:
+        kwargs['maxBlocksInCache'] = 10
 
-@register.inclusion_tag('field_ops/forms/user-preferences.html', takes_context=True)
-def render_preferences_form(context):
-    request = context.get('request')
-    if request:
+    try:
+        default_col_def = json.loads(default_col_def) if default_col_def else {}
+    except json.decoder.JSONDecodeError:
+        default_col_def = {}
 
-        context['next_url'] = request.path
-        context['form'] = user_preference_form_builder(instance=request.user)
+    assert hasattr(view_func, 'view_class'), 'Only class based views supported'
+    view_class = view_func.view_class
+    context['grid_id'] = grid_id if grid_id else 'data-grid'
+    context['grid_class'] = grid_class if grid_class else 'ag-theme-balham'
+    context['column_defs'] = json.dumps(view_class.column_defs)
+    context['url_path'] = url_path
+    context['default_col_def'] = json.dumps(default_col_def)
+    cache_key = f'AG_GRID_LOCALE_{AG_GRID_LOCALE}'
+    locale_text = cache.get(cache_key)
 
+    if not locale_text:
+        with Session() as handler:
+            url = f'https://raw.githubusercontent.com/ag-grid/ag-grid/latest/community-modules/locale/src/{AG_GRID_LOCALE}.ts'
+
+            with handler.get(url) as response:
+                locale_text = re.search(r'export\s+const\s+\w+\s*=\s*({.*?});',
+                                                   response.content.decode('utf-8'), re.DOTALL).group(1)
+                cache.set(cache_key, locale_text, int(AG_GRID_LOCALE_CACHE))
+
+    context['locale_text'] = locale_text
+    context['additional_settings'] = json.dumps(kwargs)
     return context

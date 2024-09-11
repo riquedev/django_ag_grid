@@ -1,0 +1,2 @@
+recursive-include django_ag_grid/static *
+recursive-include django_ag_grid/templates *
