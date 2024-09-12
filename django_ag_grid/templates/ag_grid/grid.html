@@ -8,7 +8,7 @@
             {% for row in column_defs %}
                 {
                     {% for key, value in row.items %}
-                        {{ key|safe }}: {{ value|safe }}{% if not forloop.last %},{% endif %}
+                        {{ key|safe }}: "{{ value|safe }}"{% if not forloop.last %},{% endif %}
                     {% endfor %}
                 }{% if not forloop.last %},{% endif %}
             {% endfor %}
