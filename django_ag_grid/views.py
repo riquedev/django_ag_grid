@@ -59,11 +59,11 @@ class BaseAGGridView(ListView):
             queryset = self.apply_sort(json.loads(sort_params), queryset)
         return queryset
 
-    def convert_file_fields(self, rows: list):
+    def convert_file_fields(self, queryset):
         """
         Converte campos de arquivos/imagens em URLs.
         """
-        for row in rows:
+        for row in queryset:
             for col_def in self.column_defs:
                 field_name = col_def['field']
                 field = self.model._meta.get_field(field_name)
@@ -71,7 +71,7 @@ class BaseAGGridView(ListView):
                 # Se o campo for do tipo arquivo ou imagem, converte para URL
                 if isinstance(field, (FileField, ImageField)) and row.get(field_name):
                     row[field_name] = row[field_name].url
-        return rows
+        return queryset
 
     def get(self, request, *args, **kwargs):
         start_row = int(request.GET.get("startRow", 0))
@@ -81,9 +81,9 @@ class BaseAGGridView(ListView):
         queryset = queryset[start_row:end_row]
 
         rows = list(
-            queryset.values(
+            queryset.only(
                 *[col['field'] for col in self.column_defs]
-            ) if self.column_defs else queryset.values()
+            ) if self.column_defs else queryset
         )
         rows = self.convert_file_fields(rows)
         return JsonResponse({"rows": rows, "totalRows": total_rows})
