@@ -63,15 +63,21 @@ class BaseAGGridView(ListView):
         """
         Converte campos de arquivos/imagens em URLs.
         """
+        rows = []
         for row in queryset:
+            cols = {}
             for col_def in self.column_defs:
                 field_name = col_def['field']
                 field = self.model._meta.get_field(field_name)
 
                 # Se o campo for do tipo arquivo ou imagem, converte para URL
+
                 if isinstance(field, (FileField, ImageField)) and row.get(field_name):
-                    row[field_name] = row[field_name].url
-        return queryset
+                    cols[field_name] = row[field_name].url
+                else:
+                    cols[field_name] = row[field_name]
+            rows.append(cols)
+        return rows
 
     def get(self, request, *args, **kwargs):
         start_row = int(request.GET.get("startRow", 0))
