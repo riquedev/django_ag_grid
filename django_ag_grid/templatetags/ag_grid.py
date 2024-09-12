@@ -22,6 +22,7 @@ def render_ag_grid(context, url_name,
                    grid_id: str = None,
                    grid_class: str = None,
                    default_col_def: str = '',
+                   style: str = 'height: 100%; width: 100%',
                    **kwargs
                    ):
     url_path = reverse(url_name)
@@ -42,6 +43,7 @@ def render_ag_grid(context, url_name,
     context['column_defs'] = view_class.column_defs
     context['url_path'] = url_path
     context['default_col_def'] = json.dumps(default_col_def)
+    context['style'] = style
     cache_key = f'AG_GRID_LOCALE_{AG_GRID_LOCALE}'
     locale_text = cache.get(cache_key)
 
