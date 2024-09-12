@@ -4,6 +4,8 @@
 
     <script type="text/javascript" charset="utf-8">
         (() => {
+            if(!Object.hasOwn(window, 'djCellRenderer'))
+                window['djCellRenderer'] = {}
             const columnDefs = [
             {% for row in column_defs %}
                 {
@@ -13,6 +15,12 @@
                 }{% if not forloop.last %},{% endif %}
             {% endfor %}
             ];
+
+            columnDefs.forEach(colDef => {
+                if(window['djCellRenderer'].hasOwnProperty(colDef.field))
+                    colDef.cellRenderer = window['djCellRenderer'][colDef.field];
+            });
+
             const defaultColDef = JSON.parse('{{ default_col_def|escapejs }}');
             const additionalSettings = JSON.parse('{{ additional_settings|escapejs }}');
             const localeText = {{ locale_text|safe }};
@@ -44,6 +52,7 @@
                 },
             }
             const gridDiv = document.querySelector('#{{ grid_id }}')
+
             if(!Object.hasOwn(window, 'agGrids'))
                 window.agGrids = {};
 
