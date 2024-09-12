@@ -44,11 +44,11 @@
                 },
             }
             const gridDiv = document.querySelector('#{{ grid_id }}')
-
             if(!Object.hasOwn(window, 'agGrids'))
                 window.agGrids = {};
 
             window.agGrids['{{ grid_id }}'] = agGrid.createGrid(gridDiv, gridOptions);
+            window.agGrids['{{ grid_id }}'].setGridOption('datasource', dataSource)
         })();
     </script>
 {% endspaceless %}
