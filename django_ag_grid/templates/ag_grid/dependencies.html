@@ -1,6 +1,8 @@
 {% spaceless %}
     <script src="{{ js }}"></script>
-    <link rel="stylesheet" href="{{ css }}">
+    {% if css %}
+        <link rel="stylesheet" href="{{ css }}">
+    {% endif %}
     {% if theme %}
         <link rel="stylesheet" href="{{ theme }}">
     {% endif %}
