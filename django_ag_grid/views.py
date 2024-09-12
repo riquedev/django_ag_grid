@@ -72,7 +72,7 @@ class BaseAGGridView(ListView):
 
                 # Se o campo for do tipo arquivo ou imagem, converte para URL
                 cols[field_name] = getattr(row, field_name)
-                if isinstance(field, (FileField, ImageField)) and row.get(field_name):
+                if isinstance(field, (FileField, ImageField)):
                     if cols[field_name]:
                         cols[field_name] = cols[field_name].url
 
