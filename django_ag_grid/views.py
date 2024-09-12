@@ -71,11 +71,11 @@ class BaseAGGridView(ListView):
                 field = self.model._meta.get_field(field_name)
 
                 # Se o campo for do tipo arquivo ou imagem, converte para URL
-
+                cols[field_name] = getattr(row, field_name)
                 if isinstance(field, (FileField, ImageField)) and row.get(field_name):
-                    cols[field_name] = row[field_name].url
-                else:
-                    cols[field_name] = row[field_name]
+                    if cols[field_name]:
+                        cols[field_name] = cols[field_name].url
+
             rows.append(cols)
         return rows
 
