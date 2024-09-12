@@ -80,10 +80,9 @@ class BaseAGGridView(ListView):
         total_rows = queryset.count()
         queryset = queryset[start_row:end_row]
 
-        rows = list(
-            queryset.only(
+        rows = queryset.only(
                 *[col['field'] for col in self.column_defs]
             ) if self.column_defs else queryset
-        )
+
         rows = self.convert_file_fields(rows)
         return JsonResponse({"rows": rows, "totalRows": total_rows})
