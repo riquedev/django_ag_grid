@@ -46,7 +46,7 @@ def render_ag_grid(context, url_name,
     view_class = view_func.view_class
     context['grid_id'] = grid_id if grid_id else 'data-grid'
     context['grid_class'] = grid_class if grid_class else 'ag-theme-balham'
-    context['column_defs'] = json.dumps(view_class.column_defs)
+    context['column_defs'] = view_class.column_defs
     context['url_path'] = url_path
     context['default_col_def'] = json.dumps(default_col_def)
     cache_key = f'AG_GRID_LOCALE_{AG_GRID_LOCALE}'

@@ -4,7 +4,11 @@
 
     <script type="text/javascript" charset="utf-8">
         (() => {
-            const columnDefs = JSON.parse('{{ column_defs|escapejs }}');
+            const columnDefs = {
+            {% for key,value in column_defs.items %}
+                {{ key|safe }}: {{ value|safe }}{% if not forloop.last %},{% endif %}
+            {% endfor %}
+            };
             const defaultColDef = JSON.parse('{{ default_col_def|escapejs }}');
             const additionalSettings = JSON.parse('{{ additional_settings|escapejs }}');
             const localeText = {{ locale_text|safe }};
