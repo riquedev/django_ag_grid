@@ -6,6 +6,8 @@
         (() => {
             if(!Object.hasOwn(window, 'djCellRenderer'))
                 window['djCellRenderer'] = {}
+            if(!Object.hasOwn(window, 'djGridOptions'))
+                window['djGridOptions'] = {}
             const columnDefs = [
             {% for row in column_defs %}
                 {
@@ -28,7 +30,8 @@
                 columnDefs,
                 defaultColDef,
                 localeText,
-                ...additionalSettings
+                ...additionalSettings,
+                ...window['djGridOptions']
             }
 
             const dataSource = {
