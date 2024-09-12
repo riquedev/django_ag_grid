@@ -45,8 +45,7 @@
             }
             const gridDiv = document.querySelector('#{{ grid_id }}')
             new agGrid.Grid(gridDiv, gridOptions);
-            gridOptions.api.setGridOption('datasource', dataSource)
-            gridOptions.api.sizeColumnsToFit();
+            window.agGrids['{{ grid_id }}'] = gridOptions;
         })();
     </script>
 {% endspaceless %}

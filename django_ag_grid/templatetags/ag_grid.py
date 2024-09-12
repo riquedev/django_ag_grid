@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.urls import resolve, reverse
 from django_ag_grid.settings import AG_GRID_JS, AG_GRID_CSS, AG_GRID_THEME, AG_GRID_LOCALE, AG_GRID_LOCALE_CACHE
 from requests import Session
+
 register = template.Library()
 
 
@@ -26,16 +27,8 @@ def render_ag_grid(context, url_name,
     url_path = reverse(url_name)
     view_func = resolve(url_path).func
 
-    if 'enableServerSideSorting' not in kwargs:
-        kwargs['enableServerSideSorting'] = True
-    if 'enableServerSideFilter' not in kwargs:
-        kwargs['enableServerSideFilter'] = True
     if 'rowModelType' not in kwargs:
         kwargs['rowModelType'] = 'infinite'
-    if 'cacheBlockSize' not in kwargs:
-        kwargs['cacheBlockSize'] = 100
-    if 'maxBlocksInCache' not in kwargs:
-        kwargs['maxBlocksInCache'] = 10
 
     try:
         default_col_def = json.loads(default_col_def) if default_col_def else {}
@@ -58,7 +51,7 @@ def render_ag_grid(context, url_name,
 
             with handler.get(url) as response:
                 locale_text = re.search(r'export\s+const\s+\w+\s*=\s*({.*?});',
-                                                   response.content.decode('utf-8'), re.DOTALL).group(1)
+                                        response.content.decode('utf-8'), re.DOTALL).group(1)
                 cache.set(cache_key, locale_text, int(AG_GRID_LOCALE_CACHE))
 
     context['locale_text'] = locale_text
