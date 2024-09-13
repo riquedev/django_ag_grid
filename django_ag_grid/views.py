@@ -85,7 +85,7 @@ class BaseAGGridView(ListView):
         queryset = queryset[start_row:end_row]
 
         rows = queryset.only(
-            *[col['field'] for col in self.column_defs]
+            *[col['field'] for col in self.column_defs if not col.get('placeholder', False)]
         ) if self.column_defs else queryset
 
         rows = self.serialize_fields(rows)
