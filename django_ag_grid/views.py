@@ -3,6 +3,7 @@ from warnings import warn
 from django.views.generic.list import ListView
 from django.http import JsonResponse
 from django.db.models import Q, QuerySet, FileField, ImageField
+from django.utils.dateparse import parse_datetime
 
 
 class BaseAGGridView(ListView):
@@ -14,6 +15,7 @@ class BaseAGGridView(ListView):
         for key, filter_info in filters.items():
             filter_type = filter_info.get("type")
             filter_value = filter_info.get("filter")
+            filter_data_type = filter_info.get("filterType")
 
             if filter_type == "contains":
                 lookup = f"{key}__icontains"
@@ -24,6 +26,9 @@ class BaseAGGridView(ListView):
             elif filter_type == "notEqual":
                 lookup = f"{key}__exact"
                 q_objects &= ~Q(**{lookup: filter_value})
+            elif filter_type == 'greaterThan' and filter_data_type == 'date':
+                lookup = f"{key}__gt"
+                q_objects &= Q(**{lookup: parse_datetime(filter_info.get('dateFrom'))})
             elif filter_type == "greaterThan":
                 lookup = f"{key}__gt"
                 q_objects &= Q(**{lookup: filter_value})
