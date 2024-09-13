@@ -66,6 +66,12 @@ class BaseAGGridView(ListView):
             cols = {}
             for col_def in self.column_defs:
                 field_name = col_def['field']
+
+                if col_def.get('placeholder', False) is not False:
+                    if field_name not in cols:
+                        cols[field_name] = '[PLACEHOLDER]'
+                    continue
+
                 field = self.model._meta.get_field(field_name)
 
                 # Se o campo for do tipo arquivo ou imagem, converte para URL
