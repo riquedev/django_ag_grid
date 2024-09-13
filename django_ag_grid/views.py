@@ -60,7 +60,6 @@ class BaseAGGridView(ListView):
             queryset = self.apply_sort(json.loads(sort_params), queryset)
         return queryset
 
-
     def serialize_fields(self, queryset) -> list:
         rows = []
         for row in queryset:
@@ -77,6 +76,7 @@ class BaseAGGridView(ListView):
 
             rows.append(cols)
         return rows
+
     def get(self, request, *args, **kwargs):
         start_row = int(request.GET.get("startRow", 0))
         end_row = int(request.GET.get("endRow", 100))
@@ -85,8 +85,8 @@ class BaseAGGridView(ListView):
         queryset = queryset[start_row:end_row]
 
         rows = queryset.only(
-                *[col['field'] for col in self.column_defs]
-            ) if self.column_defs else queryset
+            *[col['field'] for col in self.column_defs]
+        ) if self.column_defs else queryset
 
         rows = self.serialize_fields(rows)
         return JsonResponse({"rows": rows, "totalRows": total_rows})

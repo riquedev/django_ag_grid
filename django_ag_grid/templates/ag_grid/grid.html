@@ -10,15 +10,7 @@
                 window['djCellRenderer'] = {}
             if(!Object.hasOwn(window, 'djGridOptions'))
                 window['djGridOptions'] = {}
-            const columnDefs = [
-            {% for row in column_defs %}
-                {
-                    {% for key, value in row.items %}
-                        {{ key|safe }}: "{{ value|safe }}"{% if not forloop.last %},{% endif %}
-                    {% endfor %}
-                }{% if not forloop.last %},{% endif %}
-            {% endfor %}
-            ];
+            const columnDefs = [{% for row in column_defs %}{{% for key, value in row.items %}{% if key != 'placeholder' %}{{ key|safe }}: "{{ value|safe }}"{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}}{% if not forloop.last %},{% endif %}{% endfor %}];
 
             columnDefs.forEach(colDef => {
                 if(window['djCellRenderer'].hasOwnProperty(colDef.field))
