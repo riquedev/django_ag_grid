@@ -56,6 +56,6 @@ def render_ag_grid(context, url_name,
                                         response.content.decode('utf-8'), re.DOTALL).group(1)
                 cache.set(cache_key, locale_text, int(AG_GRID_LOCALE_CACHE))
 
-    context['locale_text'] = str(locale_text).strip().replace('\n', ' ')
+    context['locale_text'] = str(locale_text).strip()
     context['additional_settings'] = json.dumps(kwargs)
     return context
