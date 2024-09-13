@@ -1,4 +1,5 @@
 import json
+from warnings import warn
 from django.views.generic.list import ListView
 from django.http import JsonResponse
 from django.db.models import Q, QuerySet, FileField, ImageField
@@ -59,10 +60,8 @@ class BaseAGGridView(ListView):
             queryset = self.apply_sort(json.loads(sort_params), queryset)
         return queryset
 
-    def convert_file_fields(self, queryset):
-        """
-        Converte campos de arquivos/imagens em URLs.
-        """
+
+    def serialize_fields(self, queryset) -> list:
         rows = []
         for row in queryset:
             cols = {}
@@ -78,7 +77,6 @@ class BaseAGGridView(ListView):
 
             rows.append(cols)
         return rows
-
     def get(self, request, *args, **kwargs):
         start_row = int(request.GET.get("startRow", 0))
         end_row = int(request.GET.get("endRow", 100))
@@ -90,5 +88,5 @@ class BaseAGGridView(ListView):
                 *[col['field'] for col in self.column_defs]
             ) if self.column_defs else queryset
 
-        rows = self.convert_file_fields(rows)
+        rows = self.serialize_fields(rows)
         return JsonResponse({"rows": rows, "totalRows": total_rows})

@@ -4,6 +4,8 @@
 
     <script type="text/javascript" charset="utf-8">
         (() => {
+            if(!Object.hasOwn(window, 'djCellConfig'))
+                window['djCellConfig'] = {}
             if(!Object.hasOwn(window, 'djCellRenderer'))
                 window['djCellRenderer'] = {}
             if(!Object.hasOwn(window, 'djGridOptions'))
@@ -21,6 +23,8 @@
             columnDefs.forEach(colDef => {
                 if(window['djCellRenderer'].hasOwnProperty(colDef.field))
                     colDef.cellRenderer = window['djCellRenderer'][colDef.field];
+                if(window['djCellConfig'].hasOwnProperty(colDef.field))
+                    Object.assign(colDef, window['djCellConfig'][colDef.field])
             });
 
             const defaultColDef = JSON.parse('{{ default_col_def|escapejs }}');
