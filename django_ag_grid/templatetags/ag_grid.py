@@ -23,9 +23,13 @@ def render_ag_grid(context, url_name,
                    grid_class: str = None,
                    default_col_def: str = '',
                    style: str = 'height: 100%; width: 100%',
+                   url_pk : int = None,
                    **kwargs
                    ):
-    url_path = reverse(url_name)
+    if url_pk is None:
+        url_path = reverse(url_name)
+    else:
+        url_path = reverse(url_name, kwargs={'pk': url_pk})
     view_func = resolve(url_path).func
 
     if 'rowModelType' not in kwargs:
