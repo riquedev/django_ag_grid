@@ -1,5 +1,7 @@
 import json
 from warnings import warn
+
+from django.db.models.fields.files import ImageFieldFile
 from django.views.generic.list import ListView
 from django.http import JsonResponse
 from django.db.models import Q, QuerySet, FileField, ImageField
@@ -81,7 +83,7 @@ class BaseAGGridView(ListView):
 
                 # Se o campo for do tipo arquivo ou imagem, converte para URL
                 cols[field_name] = getattr(row, field_name)
-                if isinstance(field, (FileField, ImageField)):
+                if isinstance(field, (FileField, ImageField, ImageFieldFile)):
                     if cols[field_name]:
                         cols[field_name] = cols[field_name].url
 
