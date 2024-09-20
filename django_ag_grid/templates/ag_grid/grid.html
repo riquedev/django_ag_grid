@@ -26,8 +26,8 @@
                     Object.assign(colDef, window['djCellConfig'][colDef.field])
             });
 
-            const defaultColDef = JSON.parse('{{ default_col_def|escapejs }}');
-            const additionalSettings = JSON.parse('{{ additional_settings|escapejs }}');
+            const defaultColDef = JSON.parse('{{ default_col_def|safe }}');
+            const additionalSettings = JSON.parse('{{ additional_settings|safe }}');
             const localeText = {{ locale_text|safe }};
             const gridOptions = {
                 columnDefs,
