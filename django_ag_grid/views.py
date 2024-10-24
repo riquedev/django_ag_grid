@@ -76,7 +76,7 @@ class BaseAGGridView(ListView):
 
                 if col_def.get('placeholder', False) is not False:
                     if field_name not in cols:
-                        cols[field_name] = '[PLACEHOLDER]'
+                        cols[field_name] = getattr(row, field_name, '[PLACEHOLDER]')
                     continue
 
                 field = self.model._meta.get_field(field_name)
