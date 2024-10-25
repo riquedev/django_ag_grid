@@ -39,7 +39,7 @@ class BaseAGGridView(ListView):
             elif filter_type == 'blank':
                 lookup = f"{key}__isnull"
                 q_objects &= Q(**{lookup: True})
-            elif filter_type == 'blank':
+            elif filter_type == 'notBlank':
                 lookup = f"{key}__isnull"
                 q_objects &= Q(**{lookup: False})
 
