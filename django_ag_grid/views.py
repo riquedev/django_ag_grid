@@ -10,7 +10,6 @@ from django.utils.dateparse import parse_datetime
 
 class BaseAGGridView(ListView):
     column_defs = []
-
     def apply_filters(self, filters: dict, queryset: QuerySet) -> QuerySet:
         q_objects = Q()
 
@@ -37,6 +36,12 @@ class BaseAGGridView(ListView):
             elif filter_type == "lessThan":
                 lookup = f"{key}__lt"
                 q_objects &= Q(**{lookup: filter_value})
+            elif filter_type == 'blank':
+                lookup = f"{key}__isnull"
+                q_objects &= Q(**{lookup: True})
+            elif filter_type == 'blank':
+                lookup = f"{key}__isnull"
+                q_objects &= Q(**{lookup: False})
 
         return queryset.filter(q_objects)
 
