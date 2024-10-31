@@ -55,12 +55,6 @@
                         })
                         .catch((err) => {
                             params.failCallback();
-                            params.parentNode.gridApi.dispatchEvent({
-                                type: 'failCallback',
-                                api: params.parentNode.gridApi,
-                                columnApi: params.parentNode.columnApi,
-                                error: err
-                            });
                             window.agGrids['{{ grid_id }}'].setGridOption('loading', false)
                         });
                 },
