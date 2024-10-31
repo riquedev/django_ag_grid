@@ -59,7 +59,7 @@
                                 type: 'failCallback',
                                 api: params.parentNode.gridApi,
                                 columnApi: params.parentNode.columnApi,
-                                error: error
+                                error: err
                             });
                             window.agGrids['{{ grid_id }}'].setGridOption('loading', false)
                         });
