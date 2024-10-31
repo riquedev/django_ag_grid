@@ -46,16 +46,16 @@
                     let endRow = params.endRow;
 
                     let url = `{{ url_path }}?startRow=${startRow}&endRow=${endRow}&filter=${filtering}&sort=${sorting}`;
-                    params.api.showLoadingOverlay();
+                    this.gridApi.showLoadingOverlay();
                     fetch(url)
                         .then((response) => response.json())
                         .then((data) => {
                             params.successCallback(data.rows, data.totalRows);
-                            params.api.hideOverlay();
+                            this.gridApi.hideOverlay();
                         })
                         .catch((err) => {
                             params.failCallback();
-                            params.api.hideOverlay();
+                            this.gridApi.hideOverlay();
                             if(Object.hasOwn(gridOptions, 'onError'))
                                 gridOptions.onError(err)
                         });
