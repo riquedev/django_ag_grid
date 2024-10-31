@@ -56,8 +56,6 @@
                         .catch((err) => {
                             params.failCallback();
                             window.agGrids['{{ grid_id }}'].setGridOption('loading', false)
-                            if(Object.hasOwn(gridOptions, 'onError'))
-                                gridOptions.onError(err)
                         });
                 },
             }
