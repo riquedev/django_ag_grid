@@ -4,11 +4,11 @@
 
     <script type="text/javascript" charset="utf-8">
         (() => {
-            if(!Object.hasOwn(window, 'djCellConfig'))
+            if (!Object.hasOwn(window, 'djCellConfig'))
                 window['djCellConfig'] = {}
-            if(!Object.hasOwn(window, 'djCellRenderer'))
+            if (!Object.hasOwn(window, 'djCellRenderer'))
                 window['djCellRenderer'] = {}
-            if(!Object.hasOwn(window, 'djGridOptions'))
+            if (!Object.hasOwn(window, 'djGridOptions'))
                 window['djGridOptions'] = {}
             const columnDefs = [{% for row in column_defs %}{
                     {% for key, value in row.items %}
@@ -16,13 +16,13 @@
                             {{ key|safe }}: "{{ value|safe }}"{% if not forloop.last %},{% endif %}
                         {% endif %}
                     {% endfor %}
-                }{% if not forloop.last %},{% endif %}
-            {% endfor %}];
+                    }{% if not forloop.last %},{% endif %}
+                {% endfor %}];
 
             columnDefs.forEach(colDef => {
-                if(window['djCellRenderer'].hasOwnProperty(colDef.field))
+                if (window['djCellRenderer'].hasOwnProperty(colDef.field))
                     colDef.cellRenderer = window['djCellRenderer'][colDef.field];
-                if(window['djCellConfig'].hasOwnProperty(colDef.field))
+                if (window['djCellConfig'].hasOwnProperty(colDef.field))
                     Object.assign(colDef, window['djCellConfig'][colDef.field])
             });
 
@@ -55,13 +55,19 @@
                         })
                         .catch((err) => {
                             params.failCallback();
+                            params.parentNode.gridApi.dispatchEvent({
+                                type: 'failCallback',
+                                api: params.parentNode.gridApi,
+                                columnApi: params.parentNode.columnApi,
+                                error: error
+                            });
                             window.agGrids['{{ grid_id }}'].setGridOption('loading', false)
                         });
                 },
             }
             const gridDiv = document.querySelector('#{{ grid_id }}')
 
-            if(!Object.hasOwn(window, 'agGrids'))
+            if (!Object.hasOwn(window, 'agGrids'))
                 window.agGrids = {};
 
             window.agGrids['{{ grid_id }}'] = agGrid.createGrid(gridDiv, gridOptions);
